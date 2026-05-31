@@ -396,6 +396,8 @@ MonoBehaviour:
   _sprintModifier: 2
   _crouchModifier: 0.5
   _jumpHeight: 2
+  _downDrag: 0.5
+  _headHeight: 1.1
   _mouseSensitivity: 0.1
 --- !u!136 &631651218
 CapsuleCollider:
@@ -673,7 +675,7 @@ Transform:
   m_GameObject: {fileID: 1144540519}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -7.09, y: 3.61, z: -16.91}
+  m_LocalPosition: {x: -7.09, y: 3.5, z: -16.91}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
