@@ -6,11 +6,10 @@ public class Tag_Game : NetworkIdentity
     //private SyncVar<>
     public bool isIt = false;
 
-    private Renderer playerRenderer;
+    [SerializeField]private Renderer _playerRenderer;
 
     void Start()
     {
-        playerRenderer = GetComponent<Renderer>();
         UpdateColor(isIt);
     }
     private void UpdateColor(bool it)
@@ -20,5 +19,6 @@ public class Tag_Game : NetworkIdentity
     protected override void OnSpawned()
     {
         base.OnSpawned();
+        //if () { }
     }
 }

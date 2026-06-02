@@ -1,8 +1,10 @@
+using PurrNet;
+using System.Globalization;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-public class Catching_System : MonoBehaviour
+public class Catching_System : NetworkIdentity
 {
     [SerializeField] private float _catchRange = 1.5f;
     [SerializeField] private RawImage _crosshair;
@@ -24,16 +26,15 @@ public class Catching_System : MonoBehaviour
     }
     void Update()
     {
+        if (!isOwner) return;
+
         bool inRange = Physics.Raycast(transform.position + Vector3.up * 0.5f, _camera.transform.rotation * Vector3.forward, out RaycastHit hit, _catchRange);
-        if (inRange)
+        if (inRange && hit.collider.CompareTag("Player") && !hit.collider.GetComponent<NetworkIdentity>().isOwner)
         {
             _crosshair.color = _colorFadedIn;
             if (Mouse.current.leftButton.isPressed)
             {
-                if (hit.collider.CompareTag("Player"))
-                {
-                    Debug.Log("Player caught!");
-                }
+                Debug.Log("Player caught!");
             }
         }
         else _crosshair.color = _colorFadedOut;
