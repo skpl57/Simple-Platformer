@@ -10,6 +10,7 @@ public class Catching_System : NetworkIdentity
     [SerializeField] private RawImage _crosshair;
     [SerializeField] private Camera _camera;
 
+    private Tag_Game tag_Game;
     private Color _colorFadedOut;
     private Color _colorFadedIn;
     private void Start()
@@ -22,6 +23,7 @@ public class Catching_System : NetworkIdentity
         {
             _colorFadedIn = fadeIn;
         }
+        tag_Game = GetComponent<Tag_Game>();
         _crosshair.color = _colorFadedOut;
     }
     void Update()
@@ -32,10 +34,18 @@ public class Catching_System : NetworkIdentity
         if (inRange && hit.collider.CompareTag("Player") && !hit.collider.GetComponent<NetworkIdentity>().isOwner)
         {
             _crosshair.color = _colorFadedIn;
-            if (Mouse.current.leftButton.isPressed)
+            if (Mouse.current.leftButton.wasPressedThisFrame)
             {
-                Debug.Log("Player caught!");
+                if (hit.collider.TryGetComponent<Tag_Game>(out Tag_Game targetPlayer))
+                {
+                    if (tag_Game.isIt.value)
+                    {
+                        Debug.Log($"Passing tag to {targetPlayer.gameObject.name}");
+                        tag_Game.PassTagServerRpc(targetPlayer);
+                    }
+                }
             }
+
         }
         else _crosshair.color = _colorFadedOut;
     }

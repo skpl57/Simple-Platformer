@@ -347,13 +347,6 @@ MonoBehaviour:
   _parent: {fileID: 0}
   _invertedPathToNearestParent: 
   _directChildren: []
-  _networkIdentity: {fileID: 0}
-  _color: {r: 0.9528302, g: 0.68583876, b: 0.05842829, a: 0}
-  _renderer: {fileID: 32356553}
-  health:
-    _value: 100
-    _ownerAuth: 0
-    _sendIntervalInSeconds: 0
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0

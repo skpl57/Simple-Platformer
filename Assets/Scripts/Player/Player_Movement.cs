@@ -52,7 +52,7 @@ public class Player_Movement : NetworkIdentity
         _canJump = _controller.isGrounded;
         CalculateWallClimbing();
 
-        if (!Physics.Raycast(transform.position + Vector3.up / 2f, Vector3.up, out RaycastHit hit, (transform.localScale.y == 0.5f ? 2f : 1f)))
+        if (!Physics.Raycast(transform.position + Vector3.up / 2f, Vector3.up, out RaycastHit hit, (transform.localScale.y == 0.5f ? 1.5f : 1f)))
         {
             if (Keyboard.current.leftCtrlKey.isPressed)
             {
@@ -73,7 +73,7 @@ public class Player_Movement : NetworkIdentity
 
         if (_controller.isGrounded && _velocity.y < 0) _velocity.y = -2f;
         else if (!_canJump) _velocity.y += _gravity * Time.deltaTime;
-        if(_velocity.y < -2f) { Debug.Log($"Velocity {_velocity.y}, is dead fall: {_velocity.y < -20}"); }
+        //if(_velocity.y < -2f) { Debug.Log($"Velocity {_velocity.y}, is dead fall: {_velocity.y < -20}"); }
         if (isCeilingAbove && _velocity.y > 0) _velocity.y = 0f;
 
         Vector3 horizontalMove = transform.TransformDirection(_movement) * _speedFloat;
@@ -93,8 +93,8 @@ public class Player_Movement : NetworkIdentity
 
         if (moveZ != 1f && !_controller.isGrounded) _savedVelocityModifier = _crouchModifier;
 
-        if (Keyboard.current.leftShiftKey.isPressed && _controller.isGrounded) _savedVelocityModifier = _sprintModifier;
-        if (Keyboard.current.leftCtrlKey.isPressed && _controller.isGrounded) _savedVelocityModifier = _crouchModifier;
+        if (Keyboard.current.leftShiftKey.isPressed && _controller.isGrounded && transform.localScale.y != 0.5f) _savedVelocityModifier = _sprintModifier;
+        if ((Keyboard.current.leftCtrlKey.isPressed && _controller.isGrounded) || transform.localScale.y == 0.5f) _savedVelocityModifier = _crouchModifier;
 
         _movement = new Vector3(moveX, 0f, moveZ).normalized;
         _movement *= _savedVelocityModifier;
@@ -114,7 +114,7 @@ public class Player_Movement : NetworkIdentity
     void OnDrawGizmos()
     {
         Gizmos.color = Color.orange;
-        Gizmos.DrawLine(transform.position + Vector3.up / 2f, transform.position + Vector3.up  * 2f);
+        Gizmos.DrawLine(transform.position + Vector3.up / 2f, transform.position + Vector3.up * (transform.localScale.y == 0.5f ? 1.5f : 1f));
 
         Gizmos.color = Color.blue;
         Gizmos.DrawLine(transform.position + Vector3.up / 2f, transform.position + (Vector3.up / 2f) + transform.forward * _wallCheckDistance * transform.localScale.y);

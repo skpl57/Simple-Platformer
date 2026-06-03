@@ -173,12 +173,13 @@ GameObject:
   - component: {fileID: 9136303222379374703}
   - component: {fileID: 3621933531002924575}
   - component: {fileID: 6934035325389461147}
-  - component: {fileID: 4773792594768336092}
   - component: {fileID: 3972774457640535203}
   - component: {fileID: 6202662223075212639}
+  - component: {fileID: 6000415005021221729}
+  - component: {fileID: 6321561201033589064}
+  - component: {fileID: 4773792594768336092}
   - component: {fileID: 3256906032465347529}
   - component: {fileID: 8666307273287185089}
-  - component: {fileID: 6000415005021221729}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -262,29 +263,6 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!136 &4773792594768336092
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5035775943506399854}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &3972774457640535203
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -337,6 +315,75 @@ MonoBehaviour:
   _catchRange: 1.5
   _crosshair: {fileID: 6790616925093338265}
   _camera: {fileID: 7218999059700944524}
+--- !u!114 &6000415005021221729
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5035775943506399854}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d32fd7ffa3a1044db514f19de84a650, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SyncTimer
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _timerText: {fileID: 6919244464940995759}
+--- !u!114 &6321561201033589064
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5035775943506399854}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6f9de11ae3b9554c9369fac77389d5b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Tag_Game
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
+  _playerRenderer: {fileID: 6934035325389461147}
+  taggerColor: {r: 1, g: 0, b: 0, a: 1}
+  runnerColor: {r: 0.9433962, g: 0.5721552, b: 0.09344962, a: 1}
+--- !u!136 &4773792594768336092
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5035775943506399854}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!143 &3256906032465347529
 CharacterController:
   m_ObjectHideFlags: 0
@@ -393,28 +440,6 @@ MonoBehaviour:
   _characterControllerPatch: 0
   _ownerAuth: 1
   _interpolationTiming: 0
---- !u!114 &6000415005021221729
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5035775943506399854}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9d32fd7ffa3a1044db514f19de84a650, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SyncTimer
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
-  _isSetup: 0
-  _prefabId: -2147483648
-  _componentIndex: -2147483648
-  _shouldBePooled: 0
-  _parent: {fileID: 0}
-  _invertedPathToNearestParent: 
-  _directChildren: []
-  _timerText: {fileID: 6919244464940995759}
 --- !u!1 &6179493752510766346
 GameObject:
   m_ObjectHideFlags: 0
