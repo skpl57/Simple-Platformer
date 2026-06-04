@@ -10,7 +10,8 @@ public class Catching_System : NetworkIdentity
     [SerializeField] private RawImage _crosshair;
     [SerializeField] private Camera _camera;
 
-    private Tag_Game tag_Game;
+    private Hand_Animations _animations;
+    private Tag_Game _tag_Game;
     private Color _colorFadedOut;
     private Color _colorFadedIn;
     private void Start()
@@ -23,7 +24,9 @@ public class Catching_System : NetworkIdentity
         {
             _colorFadedIn = fadeIn;
         }
-        tag_Game = GetComponent<Tag_Game>();
+        _tag_Game = GetComponent<Tag_Game>();
+        _animations = GetComponent<Hand_Animations>();
+
         _crosshair.color = _colorFadedOut;
     }
     void Update()
@@ -31,23 +34,31 @@ public class Catching_System : NetworkIdentity
         if (!isOwner) return;
 
         bool inRange = Physics.Raycast(transform.position + Vector3.up * 0.5f, _camera.transform.rotation * Vector3.forward, out RaycastHit hit, _catchRange);
-        if (inRange && hit.collider.CompareTag("Player") && !hit.collider.GetComponent<NetworkIdentity>().isOwner)
+        if (inRange && hit.collider.CompareTag("Player"))
+        {
+            _animations.PointToPlayer = true;
+        }
+        else if (inRange && hit.collider.CompareTag("Player") && !hit.collider.GetComponent<NetworkIdentity>().isOwner)
         {
             _crosshair.color = _colorFadedIn;
             if (Mouse.current.leftButton.wasPressedThisFrame)
             {
                 if (hit.collider.TryGetComponent<Tag_Game>(out Tag_Game targetPlayer))
                 {
-                    if (tag_Game.isIt.value)
+                    if (_tag_Game.isIt.value)
                     {
                         Debug.Log($"Passing tag to {targetPlayer.gameObject.name}");
-                        tag_Game.PassTagServerRpc(targetPlayer);
+                        _tag_Game.PassTagServerRpc(targetPlayer);
                     }
                 }
             }
 
         }
-        else _crosshair.color = _colorFadedOut;
+        else
+        {
+            _crosshair.color = _colorFadedOut;
+            _animations.PointToPlayer = false;
+        }
     }
     void OnDrawGizmos()
     {

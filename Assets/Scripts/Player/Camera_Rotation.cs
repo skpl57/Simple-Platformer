@@ -7,8 +7,10 @@ public class Camera_Rotation : NetworkBehaviour
     [Header("Myszka")]
     [SerializeField] private float _mouseSensitivity = 0.1f;
     [SerializeField] private float _fovSpeed = 8f;
+    [SerializeField] private float _sprintFov = 80f;
     [SerializeField] private Transform _playerBody;
-
+    
+    
     private Player_Movement _playerMovement;
     private Camera _mainCamera;
     private float _xRotation = 0f;
@@ -60,9 +62,9 @@ public class Camera_Rotation : NetworkBehaviour
         float sprint = _playerMovement.SprintModifier;
         float crouch = _playerMovement.CrouchModifier;
 
-        float targetFOV = 60f;
-        if (currentModifier == sprint) targetFOV = 70f;
-        else if (currentModifier == crouch) targetFOV = 50f;
+        float targetFOV = _sprintFov - 10f;
+        if (currentModifier == sprint) targetFOV = _sprintFov;
+        else if (currentModifier == crouch) targetFOV = _sprintFov - 20f;
 
         _mainCamera.fieldOfView = Mathf.Lerp(_mainCamera.fieldOfView, targetFOV, Time.deltaTime * _fovSpeed);
     }

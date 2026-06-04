@@ -26,11 +26,11 @@ public class Tag_Game : NetworkIdentity
         UpdateColor(obj);
     }
 
-    protected override void OnSpawned()
+    protected override void OnSpawned(bool asServer)
     {
-        base.OnSpawned();
+        base.OnSpawned(asServer);
 
-        if (isServer)
+        if (asServer)
         {
             if (networkManager.playerCount <= 1)
             {
@@ -53,7 +53,6 @@ public class Tag_Game : NetworkIdentity
 
         if (Time.time < _nextTagTime)
         {
-            Debug.Log("Berek ma jeszcze blokadę ataku!");
             return;
         }
         isIt.value = false;
