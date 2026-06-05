@@ -435,6 +435,7 @@ MonoBehaviour:
   _leftHand: {fileID: 385475459379900690}
   _rightHand: {fileID: 8025902040534316401}
   _handReturnSpeed: 8
+  _camera: {fileID: 7218999059700944524}
 --- !u!1 &6179493752510766346
 GameObject:
   m_ObjectHideFlags: 0
@@ -550,7 +551,7 @@ GameObject:
   - component: {fileID: 4616701864520627848}
   - component: {fileID: 5691057708199562374}
   - component: {fileID: 804907426515282449}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Right Arm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -736,7 +737,7 @@ GameObject:
   - component: {fileID: 732628318089818559}
   - component: {fileID: 1362989501844720725}
   - component: {fileID: 6841086338961671919}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Left Arm
   m_TagString: Untagged
   m_Icon: {fileID: 0}

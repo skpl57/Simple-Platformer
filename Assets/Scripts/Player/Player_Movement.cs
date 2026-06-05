@@ -3,6 +3,7 @@ using System;
 using System.Globalization;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UIElements;
 
 public class Player_Movement : NetworkIdentity
 {
@@ -26,7 +27,7 @@ public class Player_Movement : NetworkIdentity
     private Vector3 _boxHalfExtents;
     private float _boxWidthModifier = 0.7f;
     private float _boxSide;
-
+    private Hand_Animations _handAnimations;
 
     private bool _canJump = true;
 
@@ -38,7 +39,7 @@ public class Player_Movement : NetworkIdentity
     void Start()
     {
         _controller = GetComponent<CharacterController>();
-
+        _handAnimations = GetComponent<Hand_Animations>();
         _boxSide = _controller.radius * _boxWidthModifier;
         _boxHalfExtents = new Vector3(_boxSide, 0.02f, _boxSide);
     }
@@ -102,19 +103,33 @@ public class Player_Movement : NetworkIdentity
 
     private void CalculateWallClimbing()
     {
-        bool canWallClimb = Physics.Raycast(transform.position + Vector3.up / 2f, transform.forward, _wallCheckDistance * transform.localScale.y, LayerMask.GetMask("Default")) &&
+        RaycastHit wall;
+        RaycastHit topOfTheEdge;
+
+        bool canWallClimb = Physics.Raycast(transform.position + Vector3.up / 2f, transform.forward, out wall, _wallCheckDistance * transform.localScale.y, LayerMask.GetMask("Default")) &&
                              !Physics.Raycast(transform.position + Vector3.up * 1.5f, transform.forward, _wallCheckDistance * transform.localScale.y, LayerMask.GetMask("Default"));
         if (canWallClimb)
         {
             _velocity.y = 0f;
             _canJump = true;
+
+            if (Physics.Raycast(transform.position + Vector3.up * 1.5f + transform.forward * wall.distance, Vector3.down, out topOfTheEdge, 1.5f, LayerMask.GetMask("Default")))
+            {
+                _handAnimations.HoldingEdge(topOfTheEdge.point, wall.normal);
+                _handAnimations.Climbing = true;
+            }
         }
+        else _handAnimations.Climbing = false;
     }
 
     void OnDrawGizmos()
     {
         Gizmos.color = Color.orange;
         Gizmos.DrawLine(transform.position + Vector3.up / 2f, transform.position + Vector3.up * (transform.localScale.y == 0.5f ? 1.5f : 1f));
+
+        Gizmos.color = Color.deepPink;
+        Gizmos.DrawLine(transform.position + Vector3.up * 1.5f + transform.forward * _wallCheckDistance * transform.localScale.y
+                        , transform.position + (Vector3.up / 2f) + transform.forward * _wallCheckDistance * transform.localScale.y);
 
         Gizmos.color = Color.blue;
         Gizmos.DrawLine(transform.position + Vector3.up / 2f, transform.position + (Vector3.up / 2f) + transform.forward * _wallCheckDistance * transform.localScale.y);

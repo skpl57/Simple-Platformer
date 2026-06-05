@@ -40,6 +40,7 @@ public class Catching_System : NetworkIdentity
         }
         else if (inRange && hit.collider.CompareTag("Player") && !hit.collider.GetComponent<NetworkIdentity>().isOwner)
         {
+            _animations.PointToPlayer = true;
             _crosshair.color = _colorFadedIn;
             if (Mouse.current.leftButton.wasPressedThisFrame)
             {
@@ -52,7 +53,6 @@ public class Catching_System : NetworkIdentity
                     }
                 }
             }
-
         }
         else
         {
@@ -65,6 +65,6 @@ public class Catching_System : NetworkIdentity
         Gizmos.color = Color.pink;
         Vector3 startPosition = transform.position + Vector3.up * 0.5f;
         Vector3 lookDirection = _camera.transform.rotation * Vector3.forward;
-        Gizmos.DrawLine(startPosition, startPosition + lookDirection * _catchRange);
+        //Gizmos.DrawLine(startPosition, startPosition + lookDirection * _catchRange);
     }
 }
