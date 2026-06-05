@@ -58,7 +58,7 @@ public class Camera_Rotation : NetworkBehaviour
 
     private void HandleFOV()
     {
-        float currentModifier = _playerMovement.SavedVelocityModifier;
+        float currentModifier = _playerMovement.MovingVelocityModifier;
         float sprint = _playerMovement.SprintModifier;
         float crouch = _playerMovement.CrouchModifier;
 

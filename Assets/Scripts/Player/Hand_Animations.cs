@@ -54,7 +54,6 @@ public class Hand_Animations : MonoBehaviour
         _leftHand.transform.rotation = Quaternion.Slerp(_leftHand.transform.rotation, Quaternion.Euler(0f, 0f, 0f), (_handReturnSpeed / 2f) * Time.deltaTime);
     }
 
-
     private void ResetHands()
     {
         PointToPlayer = false;

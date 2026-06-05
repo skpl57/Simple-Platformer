@@ -16,9 +16,14 @@ public class Player_Movement : NetworkIdentity
     [SerializeField] private float _downDrag = 0.5f;
     [SerializeField] private float _headHeight = 1.1f;
 
-    private float _wallCheckDistance = 1f;
+
     private CharacterController _controller;
-    private float _savedVelocityModifier = 1f;
+    private Hand_Animations _handAnimations;
+    private Stamina_System _staminaSystem;
+
+    private float _wallCheckDistance = 1f;
+    private float _movingVelocityModifier = 1f;
+    private float _jumpingVelocityModifier = 1f;
 
     private Vector3 _velocity;
     private Vector3 _movement = Vector3.zero;
@@ -27,19 +32,21 @@ public class Player_Movement : NetworkIdentity
     private Vector3 _boxHalfExtents;
     private float _boxWidthModifier = 0.7f;
     private float _boxSide;
-    private Hand_Animations _handAnimations;
 
     private bool _canJump = true;
 
     public float SprintModifier => _sprintModifier;
     public float CrouchModifier => _crouchModifier;
-    public float SavedVelocityModifier => _savedVelocityModifier;
+    public float MovingVelocityModifier => _movingVelocityModifier;
     public bool CanJump => _canJump;
+    public float JumpingVelocityModifier { get => _jumpingVelocityModifier; set => _jumpingVelocityModifier = value; }
 
     void Start()
     {
         _controller = GetComponent<CharacterController>();
         _handAnimations = GetComponent<Hand_Animations>();
+        _staminaSystem = GetComponent<Stamina_System>();
+
         _boxSide = _controller.radius * _boxWidthModifier;
         _boxHalfExtents = new Vector3(_boxSide, 0.02f, _boxSide);
     }
@@ -66,8 +73,8 @@ public class Player_Movement : NetworkIdentity
                 transform.localScale = new Vector3(1f, 1f, 1f);
                 _jumpHeight = 2f;
             }
-            if (_controller.isGrounded) _savedVelocityModifier = 1f;
-            if (Keyboard.current.spaceKey.isPressed && _canJump) _velocity.y = Mathf.Sqrt(-_jumpHeight * _gravity * 1.5f);
+            if (_controller.isGrounded) _movingVelocityModifier = 1f;
+            if (Keyboard.current.spaceKey.isPressed && _canJump) _velocity.y = Mathf.Sqrt(-_jumpHeight * _gravity * 1.5f * JumpingVelocityModifier);
         }
 
         CalculateBasicMovement();
@@ -87,18 +94,24 @@ public class Player_Movement : NetworkIdentity
         float moveX = 0f;
         float moveZ = 0f;
 
+        _staminaSystem.ConsumeStamina = false;
+
         if (Keyboard.current.wKey.isPressed) moveZ = 1f;
         if (Keyboard.current.sKey.isPressed) moveZ = -1f;
         if (Keyboard.current.dKey.isPressed) moveX = 1f;
         if (Keyboard.current.aKey.isPressed) moveX = -1f;
 
-        if (moveZ != 1f && !_controller.isGrounded) _savedVelocityModifier = _crouchModifier;
+        if (moveZ != 1f && !_controller.isGrounded) _movingVelocityModifier = _crouchModifier;
 
-        if (Keyboard.current.leftShiftKey.isPressed && _controller.isGrounded && transform.localScale.y != 0.5f) _savedVelocityModifier = _sprintModifier;
-        if ((Keyboard.current.leftCtrlKey.isPressed && _controller.isGrounded) || transform.localScale.y == 0.5f) _savedVelocityModifier = _crouchModifier;
+        if (Keyboard.current.leftShiftKey.isPressed && _controller.isGrounded && transform.localScale.y != 0.5f && _staminaSystem.Stamina > 0)
+        {
+            _movingVelocityModifier = _sprintModifier;
+            _staminaSystem.ConsumeStamina = true;
+        }
+        if ((Keyboard.current.leftCtrlKey.isPressed && _controller.isGrounded) || transform.localScale.y == 0.5f) _movingVelocityModifier = _crouchModifier;
 
         _movement = new Vector3(moveX, 0f, moveZ).normalized;
-        _movement *= _savedVelocityModifier;
+        _movement *= _movingVelocityModifier;
     }
 
     private void CalculateWallClimbing()
