@@ -12,9 +12,9 @@ public class Player_Movement : NetworkIdentity
     [SerializeField] private float _gravity = -9.81f;
     [SerializeField] private float _sprintModifier = 2f;
     [SerializeField] private float _crouchModifier = 0.5f;
-    [SerializeField] private float _jumpHeight = 2f;
-    [SerializeField] private float _downDrag = 0.5f;
+    [SerializeField] private float _normalJumpHeight = 2f;
     [SerializeField] private float _headHeight = 1.1f;
+    [SerializeField] private Transform _body;
 
 
     private CharacterController _controller;
@@ -33,13 +33,18 @@ public class Player_Movement : NetworkIdentity
     private float _boxWidthModifier = 0.7f;
     private float _boxSide;
 
-    private bool _canJump = true;
+    private float _jumpStaminaCost = 15f;
+    private float _reduceJumpHeight = 1.4f;
 
+    private bool _isClimbing = false;
+    private bool _canJump = true;
+    private bool _canSprint = true;
     public float SprintModifier => _sprintModifier;
     public float CrouchModifier => _crouchModifier;
     public float MovingVelocityModifier => _movingVelocityModifier;
     public bool CanJump => _canJump;
     public float JumpingVelocityModifier { get => _jumpingVelocityModifier; set => _jumpingVelocityModifier = value; }
+    public bool CanSprint { get => _canSprint; set => _canSprint = value; }
 
     void Start()
     {
@@ -55,26 +60,34 @@ public class Player_Movement : NetworkIdentity
     {
         if (!isOwner) return;
 
-        _boxPosition = transform.position + new Vector3(0, _headHeight * transform.localScale.y, 0);
+        _boxPosition = transform.position + new Vector3(0, _headHeight * _body.localScale.y, 0);
         bool isCeilingAbove = Physics.CheckBox(_boxPosition, _boxHalfExtents, transform.rotation, LayerMask.GetMask("Default"));
-        _canJump = _controller.isGrounded;
+        float _jumpHeight = _normalJumpHeight;
+        
         CalculateWallClimbing();
 
-        if (!Physics.Raycast(transform.position + Vector3.up / 2f, Vector3.up, out RaycastHit hit, (transform.localScale.y == 0.5f ? 1.5f : 1f)))
+        if (!Physics.Raycast(transform.position + Vector3.up / 2f, Vector3.up, out RaycastHit hit, (_body.localScale.y == 0.5f ? 0.6f : 1.1f)))
         {
             if (Keyboard.current.leftCtrlKey.isPressed)
             {
-                if (transform.localScale.y > 0.5f) _controller.Move(Vector3.down * _downDrag * Time.deltaTime);
-                transform.localScale = new Vector3(1f, 0.5f, 1f);
-                _jumpHeight = 1f;
+                _controller.height = 1.0f;
+                _controller.center = new Vector3(0f, 0.1f, 0f);
+                _body.localScale = new Vector3(1f, 0.5f, 1f);
+                _jumpHeight = _staminaSystem.Stamina > 1f ? _normalJumpHeight / 2f : _normalJumpHeight / _reduceJumpHeight / 2f;
             }
             else
             {
-                transform.localScale = new Vector3(1f, 1f, 1f);
-                _jumpHeight = 2f;
+                _controller.height = 2.0f;
+                _controller.center = new Vector3(0f, 0f, 0f);
+                _body.localScale = new Vector3(1f, 1f, 1f);
+                _jumpHeight = _staminaSystem.Stamina > 1f ? _normalJumpHeight : _normalJumpHeight / _reduceJumpHeight;
             }
             if (_controller.isGrounded) _movingVelocityModifier = 1f;
-            if (Keyboard.current.spaceKey.isPressed && _canJump) _velocity.y = Mathf.Sqrt(-_jumpHeight * _gravity * 1.5f * JumpingVelocityModifier);
+            if (Keyboard.current.spaceKey.isPressed && _canJump)
+            {
+                if(JumpingVelocityModifier > 1f) _staminaSystem.ReduceStamina(_jumpStaminaCost);
+                _velocity.y = Mathf.Sqrt(-_jumpHeight * _gravity * 1.5f * JumpingVelocityModifier);
+            }
         }
 
         CalculateBasicMovement();
@@ -94,7 +107,6 @@ public class Player_Movement : NetworkIdentity
         float moveX = 0f;
         float moveZ = 0f;
 
-        _staminaSystem.ConsumeStamina = false;
 
         if (Keyboard.current.wKey.isPressed) moveZ = 1f;
         if (Keyboard.current.sKey.isPressed) moveZ = -1f;
@@ -103,28 +115,27 @@ public class Player_Movement : NetworkIdentity
 
         if (moveZ != 1f && !_controller.isGrounded) _movingVelocityModifier = _crouchModifier;
 
-        if (Keyboard.current.leftShiftKey.isPressed && _controller.isGrounded && transform.localScale.y != 0.5f && _staminaSystem.Stamina > 0)
-        {
-            _movingVelocityModifier = _sprintModifier;
-            _staminaSystem.ConsumeStamina = true;
-        }
-        if ((Keyboard.current.leftCtrlKey.isPressed && _controller.isGrounded) || transform.localScale.y == 0.5f) _movingVelocityModifier = _crouchModifier;
+        if (Keyboard.current.leftShiftKey.isPressed && _controller.isGrounded && _body.localScale.y != 0.5f && CanSprint) _movingVelocityModifier = _sprintModifier;
+        if ((Keyboard.current.leftCtrlKey.isPressed && _controller.isGrounded) || _body.localScale.y == 0.5f) _movingVelocityModifier = _crouchModifier;
+
+        if(_isClimbing) _movingVelocityModifier = 1f;
 
         _movement = new Vector3(moveX, 0f, moveZ).normalized;
         _movement *= _movingVelocityModifier;
     }
-
     private void CalculateWallClimbing()
     {
         RaycastHit wall;
         RaycastHit topOfTheEdge;
 
-        bool canWallClimb = Physics.Raycast(transform.position + Vector3.up / 2f, transform.forward, out wall, _wallCheckDistance * transform.localScale.y, LayerMask.GetMask("Default")) &&
-                             !Physics.Raycast(transform.position + Vector3.up * 1.5f, transform.forward, _wallCheckDistance * transform.localScale.y, LayerMask.GetMask("Default"));
+        bool canWallClimb = Physics.Raycast(transform.position + Vector3.up / 2f, transform.forward, out wall, _wallCheckDistance * _body.localScale.y, LayerMask.GetMask("Default")) &&
+                             !Physics.Raycast(transform.position + Vector3.up * 1.5f, transform.forward, _wallCheckDistance * _body.localScale.y, LayerMask.GetMask("Default"));
+        _canJump = canWallClimb || _controller.isGrounded;
+        _isClimbing = canWallClimb;
         if (canWallClimb)
         {
             _velocity.y = 0f;
-            _canJump = true;
+            
 
             if (Physics.Raycast(transform.position + Vector3.up * 1.5f + transform.forward * wall.distance, Vector3.down, out topOfTheEdge, 1.5f, LayerMask.GetMask("Default")))
             {
@@ -138,22 +149,22 @@ public class Player_Movement : NetworkIdentity
     void OnDrawGizmos()
     {
         Gizmos.color = Color.orange;
-        Gizmos.DrawLine(transform.position + Vector3.up / 2f, transform.position + Vector3.up * (transform.localScale.y == 0.5f ? 1.5f : 1f));
+        Gizmos.DrawLine(transform.position + Vector3.up / 2f, transform.position + Vector3.up * (_body.localScale.y == 0.5f ? 1.5f : 1f));
 
         Gizmos.color = Color.deepPink;
-        Gizmos.DrawLine(transform.position + Vector3.up * 1.5f + transform.forward * _wallCheckDistance * transform.localScale.y
-                        , transform.position + (Vector3.up / 2f) + transform.forward * _wallCheckDistance * transform.localScale.y);
+        Gizmos.DrawLine(transform.position + Vector3.up * 1.5f + transform.forward * _wallCheckDistance * _body.localScale.y
+                        , transform.position + (Vector3.up / 2f) + transform.forward * _wallCheckDistance * _body.localScale.y);
 
         Gizmos.color = Color.blue;
-        Gizmos.DrawLine(transform.position + Vector3.up / 2f, transform.position + (Vector3.up / 2f) + transform.forward * _wallCheckDistance * transform.localScale.y);
-        Gizmos.DrawLine(transform.position + Vector3.up * 1.5f, transform.position + Vector3.up * 1.5f + transform.forward * _wallCheckDistance * transform.localScale.y);
+        Gizmos.DrawLine(transform.position + Vector3.up / 2f, transform.position + (Vector3.up / 2f) + transform.forward * _wallCheckDistance * _body.localScale.y);
+        Gizmos.DrawLine(transform.position + Vector3.up * 1.5f, transform.position + Vector3.up * 1.5f + transform.forward * _wallCheckDistance * _body.localScale.y);
 
         if (Physics.CheckBox(_boxPosition, _boxHalfExtents, transform.rotation, LayerMask.GetMask("Default")))
             Gizmos.color = Color.red;
         else
             Gizmos.color = Color.green;
 
-        Matrix4x4 rotationMatrix = Matrix4x4.TRS(_boxPosition, transform.rotation, transform.localScale);
+        Matrix4x4 rotationMatrix = Matrix4x4.TRS(_boxPosition, transform.rotation, _body.localScale);
         Gizmos.matrix = rotationMatrix;
         Gizmos.DrawWireCube(Vector3.zero, _boxHalfExtents);
         Gizmos.matrix = Matrix4x4.identity;
