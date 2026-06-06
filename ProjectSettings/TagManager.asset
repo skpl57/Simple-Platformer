@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 3
   tags:
   - Trampoline
+  - StaminaPickup
   layers:
   - Default
   - TransparentFX
