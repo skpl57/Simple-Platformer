@@ -59,7 +59,5 @@ public class Tag_Game : NetworkIdentity
         targetPlayer.isIt.value = true;
 
         targetPlayer._nextTagTime = Time.time + _tagCooldown;
-
-        Debug.Log($"Berek przekazany graczowi {targetPlayer.gameObject.name}. Blokada do: {targetPlayer._nextTagTime}");
     }
 }

@@ -728,6 +728,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Stamina_System
   _staminaBar: {fileID: 871210131645787721}
+  _staminaBarBackground: {fileID: 4585379730651177324}
   _maxStamina: 100
   _usageRate: 10
 --- !u!1 &6179493752510766346
