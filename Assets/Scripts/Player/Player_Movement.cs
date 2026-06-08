@@ -62,7 +62,7 @@ public class Player_Movement : NetworkIdentity
 
         _boxPosition = transform.position + new Vector3(0, _headHeight * _body.localScale.y, 0);
         bool isCeilingAbove = Physics.CheckBox(_boxPosition, _boxHalfExtents, transform.rotation, LayerMask.GetMask("Default"));
-        float _jumpHeight = _normalJumpHeight;
+        float jumpHeight = _normalJumpHeight;
         
         CalculateWallClimbing();
 
@@ -73,20 +73,20 @@ public class Player_Movement : NetworkIdentity
                 _controller.height = 1.0f;
                 _controller.center = new Vector3(0f, 0.1f, 0f);
                 _body.localScale = new Vector3(1f, 0.5f, 1f);
-                _jumpHeight = CanSprint ? _normalJumpHeight / 2f : _normalJumpHeight / _reduceJumpHeight / 2f;
+                jumpHeight = CanSprint ? _normalJumpHeight / 2f : _normalJumpHeight / _reduceJumpHeight / 2f;
             }
             else
             {
                 _controller.height = 2.0f;
                 _controller.center = new Vector3(0f, 0f, 0f);
                 _body.localScale = new Vector3(1f, 1f, 1f);
-                _jumpHeight = CanSprint ? _normalJumpHeight : _normalJumpHeight / _reduceJumpHeight;
+                jumpHeight = CanSprint ? _normalJumpHeight : _normalJumpHeight / _reduceJumpHeight;
             }
             if (_controller.isGrounded) _movingVelocityModifier = 1f;
             if (Keyboard.current.spaceKey.isPressed && _canJump)
             {
                 if(JumpingVelocityModifier > 1f) _staminaSystem.ReduceStamina(_jumpStaminaCost + (CanSprint ? 0 : 100));
-                _velocity.y = Mathf.Sqrt(-_jumpHeight * _gravity * 1.5f * JumpingVelocityModifier);
+                _velocity.y = Mathf.Sqrt(-jumpHeight * _gravity * 1.5f * JumpingVelocityModifier);
             }
         }
 
