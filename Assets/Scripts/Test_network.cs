@@ -26,6 +26,16 @@ public class Test_network : NetworkIdentity
     //{
     //    _renderer.material.color = _color;
     //}   
-
+    //[SerializeField] private GameObject _playerPrefab;
+    //[SerializeField] private Transform _spawnPoint;
+    //private void Start()
+    //{
+    //    if (isServer)
+    //    {
+    //        GameObject playerInstance = Instantiate(_playerPrefab, _spawnPoint.position, Quaternion.identity);
+    //        networkManager.Spawn(playerInstance);
+    //        Debug.Log("Serwer");
+    //    }
+    //}
 
 }

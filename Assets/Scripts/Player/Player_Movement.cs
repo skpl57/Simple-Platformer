@@ -3,6 +3,7 @@ using System;
 using System.Globalization;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
 public class Player_Movement : NetworkIdentity
@@ -54,6 +55,11 @@ public class Player_Movement : NetworkIdentity
 
         _boxSide = _controller.radius * _boxWidthModifier;
         _boxHalfExtents = new Vector3(_boxSide, 0.02f, _boxSide);
+        Debug.Log($"{SceneManager.loadedSceneCount == 2}");
+        if (isOwner && SceneManager.loadedSceneCount == 2)
+        {
+            SceneManager.UnloadSceneAsync("MenuScene");
+        }
     }
 
     void Update()

@@ -8,14 +8,14 @@ public class Ai_Movement : MonoBehaviour
     [Header("Działanie AI")]
     [SerializeField] private float _waypointTolerance = 1f;
     [SerializeField] private Transform _parent;
+    private List<Transform> _wayPoints = new List<Transform>();
+    private NavMeshAgent _agent;
+    private int _currentWaypointIndex = 0;
 
     [Header("Obracanie Kostki")]
     [SerializeField] private Transform _cube;
-    [SerializeField] private float _rotationSpeed = 150f;
+    private float _rotationSpeed = 200f;
 
-    private int _currentWaypointIndex = 0;
-    private NavMeshAgent _agent;
-    private List<Transform> _wayPoints = new List<Transform>();
     void Start()
     {
         foreach(Transform child in _parent)

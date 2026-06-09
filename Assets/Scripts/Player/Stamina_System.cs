@@ -1,7 +1,8 @@
+using PurrNet;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Stamina_System : MonoBehaviour
+public class Stamina_System : NetworkIdentity
 {
     [SerializeField] private Image _staminaBar;
     [SerializeField] private Image _staminaBarBackground;
@@ -26,6 +27,7 @@ public class Stamina_System : MonoBehaviour
 
     void Update()
     {
+        if (!isOwner) return;
         if (_stamina <= 0f)
         {
             _stamina = 0f;
