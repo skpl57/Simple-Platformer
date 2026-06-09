@@ -163,7 +163,7 @@ MonoBehaviour:
   _directChildren: []
   _mouseSensitivity: 0.1
   _fovSpeed: 8
-  _sprintFov: 80
+  _sprintFov: 100
   _playerBody: {fileID: 9136303222379374703}
 --- !u!1 &2990634308057920122
 GameObject:
@@ -727,6 +727,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa6a6e9889af85c45bc0c9d857d380d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Stamina_System
+  _networkRules: {fileID: 0}
+  _visitiblityRules: {fileID: 0}
+  _isSetup: 0
+  _prefabId: -2147483648
+  _componentIndex: -2147483648
+  _shouldBePooled: 0
+  _parent: {fileID: 0}
+  _invertedPathToNearestParent: 
+  _directChildren: []
   _staminaBar: {fileID: 871210131645787721}
   _staminaBarBackground: {fileID: 4585379730651177324}
   _maxStamina: 100

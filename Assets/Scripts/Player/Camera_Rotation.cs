@@ -7,7 +7,7 @@ public class Camera_Rotation : NetworkBehaviour
     [Header("Myszka")]
     [SerializeField] private float _mouseSensitivity = 0.1f;
     [SerializeField] private float _fovSpeed = 8f;
-    [SerializeField] private float _sprintFov = 80f;
+    [SerializeField] private float _sprintFov = 100f;
     [SerializeField] private Transform _playerBody;
     
     

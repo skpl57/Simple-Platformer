@@ -636,19 +636,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d556095149d00a4ab1f14c0398894bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Menu_Network
-  _networkRules: {fileID: 0}
-  _visitiblityRules: {fileID: 0}
-  _isSetup: 0
-  _prefabId: -2147483648
-  _componentIndex: -2147483648
-  _shouldBePooled: 0
-  _parent: {fileID: 0}
-  _invertedPathToNearestParent: 
-  _directChildren: []
-  ipInputField: {fileID: 1722926015}
-  joinButton: {fileID: 1267798830}
-  hostButton: {fileID: 1220107607}
-  gameplaySceneName: MainScene
+  _ipInputField: {fileID: 1722926015}
+  _joinButton: {fileID: 1267798830}
+  _hostButton: {fileID: 1220107607}
+  _gameplaySceneName: MainScene
   _networkNode: {fileID: 989659167}
 --- !u!4 &645973965
 Transform:
@@ -931,8 +922,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: PurrNet.Runtime::PurrNet.NetworkManager
   _stopPlayingOnDisconnect: 0
-  _startServerFlags: 9
-  _startClientFlags: 7
+  _startServerFlags: 8
+  _startClientFlags: 6
   _cookieScope: 1
   _dontDestroyOnLoad: 1
   _transport: {fileID: 989659165}

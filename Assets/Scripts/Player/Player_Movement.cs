@@ -38,11 +38,13 @@ public class Player_Movement : NetworkIdentity
     private float _reduceJumpHeight = 1.4f;
 
     private bool _isClimbing = false;
+    private bool _isSlowedDown = false;
     private bool _canJump = true;
     private bool _canSprint = true;
     public float SprintModifier => _sprintModifier;
     public float CrouchModifier => _crouchModifier;
     public float MovingVelocityModifier => _movingVelocityModifier;
+    public bool SlowingModifier { get => _isSlowedDown; set => _isSlowedDown = value; }
     public bool CanJump => _canJump;
     public float JumpingVelocityModifier { get => _jumpingVelocityModifier; set => _jumpingVelocityModifier = value; }
     public bool CanSprint { get => _canSprint; set => _canSprint = value; }
@@ -127,7 +129,7 @@ public class Player_Movement : NetworkIdentity
         if(_isClimbing) _movingVelocityModifier = 1f;
 
         _movement = new Vector3(moveX, 0f, moveZ).normalized;
-        _movement *= _movingVelocityModifier;
+        _movement *= _movingVelocityModifier / (SlowingModifier ? 2f : 1f);
     }
     private void CalculateWallClimbing()
     {
